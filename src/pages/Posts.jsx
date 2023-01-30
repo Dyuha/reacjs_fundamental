@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { PostList } from "../components/PostList";
 import { PostForm } from "../components/PostForm";
 import { PostFilter } from "../components/PostFilter";
@@ -12,6 +12,7 @@ import { getPagesCount } from '../utils/Pages';
 import { usePagination } from '../hooks/usePagination';
 import { Pagination } from "../components/UI/pagination/Pagination";
 import withAuthRedirect from '../hoc/withAuthRedirect';
+import { useObserver } from '../hooks/useObserver';
 
 const Posts = () => {
 
@@ -21,15 +22,32 @@ const Posts = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
+  const lastElement = useRef();
   const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
   const pagesArray = usePagination(totalPages)
 
   const [fetchPosts, isFetching, postError] = useFetching( async () => {
     const response = await PostService.getAllPosts(limit, page);
-    setPosts(response.data);
+    setPosts([...posts, ...response.data]);
     const totalCount = response.headers['x-total-count']
     setTotalPages(getPagesCount(totalCount, limit))
   })
+
+  useObserver(lastElement, isFetching, page < totalPages, () => {
+    setPage(page+1);
+  });
+
+  // ============== ну и так тоже работает ================
+  // useEffect(() => {
+  //   const callback = (entries, observer) => {
+  //     if(entries[0].isIntersecting){
+  //       console.log(page);
+  //       setPage(page => page + 1)
+  //     }
+  //   };
+  //   observer.current = new IntersectionObserver(callback);
+  //   observer.current.observe(lastElement.current)
+  // }, []) 
 
   useEffect( () => {
     fetchPosts()
@@ -48,14 +66,15 @@ const Posts = () => {
     <div className="App">
       <MyButton style={{marginTop: '30px'}} onClick={() => setModal(true)}>Создать пост</MyButton>
       <MyModal visible={modal} setVisible={setModal}><PostForm createPost={createPost} /></MyModal>
-      {/* <hr style={{ margin: "15px 0" }} /> */}
       <PostFilter filter={filter} setFilter={setFilter}/>
       {postError && <h1>{postError}</h1>}
-      {isFetching
-        ? <div style={{display:'flex', justifyContent:'center', marginTop:'50px'}} ><Loader/></div>
-        : <PostList removePost={removePost} posts={sortedAndSearchedPosts} title={"SPISOK POSTOV"}/>
-      }
-      <Pagination pagesArray={pagesArray} page={page} changePage={setPage}/>
+      <PostList removePost={removePost} posts={sortedAndSearchedPosts} title={"SPISOK POSTOV"}/>
+
+      <div style={{height:'20px'}} ref={lastElement}/>
+      
+      {isFetching && <div style={{display:'flex', justifyContent:'center', marginTop:'50px'}} ><Loader/></div>}
+      {/* ================== постраничный вывод =================== */}
+      {/* <Pagination key={page} pagesArray={pagesArray} page={page} changePage={setPage}/> */}
     </div>
   );
 };
