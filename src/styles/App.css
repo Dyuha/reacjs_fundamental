@@ -6,7 +6,8 @@
 
 #root {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .App {
@@ -35,4 +36,48 @@
 .post-exit-active {
   transform: translateX(-250px);
   transition: all 500ms ease-in;
+}
+
+.page__wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.page {
+  padding: 10px;
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.page:hover {
+  transform: translateY(-3px);
+  font-weight: bold;
+}
+
+.page__current {
+  text-decoration: underline;
+}
+
+.navbar {
+  height: 50px;
+  width: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  background: teal;
+}
+
+.navbar__links {
+  margin-left: auto;
+}
+
+.post__button {
+  display: flex;
+  flex-direction: column;
+}
+
+.post__button button {
+  margin: 2px;
 }
