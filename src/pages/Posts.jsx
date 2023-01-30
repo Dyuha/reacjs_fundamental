@@ -13,6 +13,7 @@ import { usePagination } from '../hooks/usePagination';
 import { Pagination } from "../components/UI/pagination/Pagination";
 import withAuthRedirect from '../hoc/withAuthRedirect';
 import { useObserver } from '../hooks/useObserver';
+import { MySelect } from '../components/UI/select/MySelect';
 
 const Posts = () => {
 
@@ -51,7 +52,7 @@ const Posts = () => {
 
   useEffect( () => {
     fetchPosts()
-  }, [page])
+  }, [page, limit])
 
   const createPost = (newPost) => {
     setPosts([...posts, newPost]);
@@ -67,6 +68,15 @@ const Posts = () => {
       <MyButton style={{marginTop: '30px'}} onClick={() => setModal(true)}>Создать пост</MyButton>
       <MyModal visible={modal} setVisible={setModal}><PostForm createPost={createPost} /></MyModal>
       <PostFilter filter={filter} setFilter={setFilter}/>
+      <MySelect value={limit} 
+                onChange={value => setLimit(value)} 
+                defaultValue='Кол-во эл-ов на странице' 
+                options={[
+                  {value: 5, name: '5'},
+                  {value: 10, name: '10'},
+                  {value: 25, name: '25'},
+                  {value: -1, name: 'Показать все посты'},                  
+                ]}/>
       {postError && <h1>{postError}</h1>}
       <PostList removePost={removePost} posts={sortedAndSearchedPosts} title={"SPISOK POSTOV"}/>
 
