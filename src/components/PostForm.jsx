@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 export const PostForm = ({createPost, ...props}) => {
 
-  const [post, setPost] = useState({title:'', description:'',});
+  const [post, setPost] = useState({title:'', body:'',});
 
   const addNewPost = (e) => {
     e.preventDefault();
@@ -13,7 +13,7 @@ export const PostForm = ({createPost, ...props}) => {
       ...post,
     }
     createPost(newPost);
-    setPost({title: '', description: ''})
+    setPost({title: '', body: ''})
   };
 
   return (
@@ -26,8 +26,8 @@ export const PostForm = ({createPost, ...props}) => {
           placeholder="Названиве"
         />
         <MyInput
-          onChange={(e) => setPost({ ...post, description: e.target.value })}
-          value={post.description}
+          onChange={(e) => setPost({ ...post, body: e.target.value })}
+          value={post.body}
           type="text"
           placeholder="Описание"
         />
