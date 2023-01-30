@@ -11,6 +11,7 @@ import { useFetching } from '../hooks/useFetching';
 import { getPagesCount } from '../utils/Pages';
 import { usePagination } from '../hooks/usePagination';
 import { Pagination } from "../components/UI/pagination/Pagination";
+import withAuthRedirect from '../hoc/withAuthRedirect';
 
 const Posts = () => {
 
@@ -59,4 +60,4 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+export default withAuthRedirect(Posts);

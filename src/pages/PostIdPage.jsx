@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useFetching } from "../hooks/useFetching";
 import PostService from '../API/API';
 import { Loader } from "../components/UI/loader/Loader";
+import withAuthRedirect from '../hoc/withAuthRedirect';
 
 
 const Comments = (props) => {
@@ -16,7 +17,7 @@ const Comments = (props) => {
   );
 };
 
-export const PostsIdPage = () => {
+const PostsIdPage = () => {
   
   const params = useParams();
   const [post, setPost] = useState({});
@@ -55,3 +56,5 @@ export const PostsIdPage = () => {
     </div>
   )
 }
+
+export default withAuthRedirect(PostsIdPage);
